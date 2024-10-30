@@ -1,105 +1,80 @@
 package scheduleManager;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Schedule {
-	private int startDate;
-	private int endDate;
-	private String startMonth;
-	private String endMonth;
-	private Location location;
-	private ArrayList<DayTimeSlot> dayTimeSlots;
-	
-	public Schedule() {
-		this.startDate = 1;
-		this.endDate = 1;
-		this.startMonth = null;
-		this.endMonth = null;
-		this.location = null;
-	}
-	
-	
-	public Schedule(int startDate, int endDate, String startMonth, String endMonth, String locationName, String city) {
+	private LocalDate startDate;
+	private LocalDate endDate;
+	private String daysOfWeek;
+	private LocalTime startHour;
+	private LocalTime endHour;
+	private Set<DayTimeSlot> timeslots;
+	private String city;
+	private String name;
+	private String space;
+
+	public Schedule(String city, String name, String space, LocalDate startDate, LocalDate endDate, String daysOfWeek, LocalTime startHour, LocalTime endHour) {
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.startMonth = startMonth;
-		this.endMonth = endMonth;
-		this.location = new Location(locationName, city);
-		this.dayTimeSlots = new ArrayList<DayTimeSlot>();
-	}
-	
-	public void addTimeSlot(String dayOfTheWeek, String startTime, String endTime) {
-		this.dayTimeSlots.add(new DayTimeSlot(dayOfTheWeek, startTime, endTime));
-	}
-
-
-	public int getStartDate() {
-		return startDate;
+		this.daysOfWeek = daysOfWeek;
+		this.startHour = startHour;
+		this.endHour = endHour;
+		this.timeslots = generateTimeslots();
+		this.city = city;
+		this.name = name;
+		this.space = space;
 	}
 
-
-	public void setStartDate(int startDate) {
-		this.startDate = startDate;
+	private Set<DayTimeSlot> generateTimeslots() {
+		Set<DayTimeSlot> slots = new HashSet<>();
+		ArrayList<String> daysOfWeekArr = new ArrayList<>(Arrays.asList(this.daysOfWeek.split("#")));
+		for (String day : daysOfWeekArr) {
+			LocalTime slotStart = startHour;
+			while (!slotStart.isAfter(endHour.minusMinutes(30))) {
+				LocalTime slotEnd = slotStart.plusMinutes(30);
+				slots.add(new DayTimeSlot(day, slotStart, slotEnd));
+				slotStart = slotEnd;
+			}
+		}
+		return slots;
 	}
 
-
-	public int getEndDate() {
-		return endDate;
+	public  boolean checkForOverlap(String newCity, String newName, LocalDate newStartDate, LocalDate newEndDate, String newDaysOfWeek, LocalTime newStartHour, LocalTime newEndHour) {
+		Set<DayTimeSlot> newTimeslots = new HashSet<>();
+		ArrayList<String> newDaysOfWeekArr = new ArrayList<>(Arrays.asList(newDaysOfWeek.split("#")));
+		for (String day : newDaysOfWeekArr) {
+			LocalTime slotStart = newStartHour;
+			while (!slotStart.isAfter(newEndHour.minusMinutes(30))) {
+				LocalTime slotEnd = slotStart.plusMinutes(30);
+				newTimeslots.add(new DayTimeSlot(day, slotStart, slotEnd));
+				slotStart = slotEnd;
+			}
+		}
+			if ((this.startDate.isBefore(newEndDate) || this.endDate.isAfter(newStartDate)) && this.city.equals(newCity) && this.name.equals(newName)) {
+				for (DayTimeSlot el : newTimeslots) {
+					if (this.timeslots.contains(el)) {
+						return true;
+					}
+				}
+			}
+		return false;
 	}
-
-
-	public void setEndDate(int endDate) {
-		this.endDate = endDate;
-	}
-
-
-	public String getStartMonth() {
-		return startMonth;
-	}
-
-
-	public void setStartMonth(String startMonth) {
-		this.startMonth = startMonth;
-	}
-
-
-	public String getEndMonth() {
-		return endMonth;
-	}
-
-
-	public void setEndMonth(String endMonth) {
-		this.endMonth = endMonth;
-	}
-	
-	public Location getLocation() {
-		return this.location;
-	}
-	
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Schedule other = (Schedule) obj;
-		return endDate == other.endDate && Objects.equals(endMonth, other.endMonth) && startDate == other.startDate
-				&& Objects.equals(startMonth, other.startMonth);
-	}
-
 
 	@Override
 	public String toString() {
-		return "Schedule startDate= " + startDate + ", endDate= " + endDate + ", startMonth= " + startMonth
-				+ ", endMonth= " + endMonth + " , location" + location;
+		return "Schedule " +
+				"startDate " + startDate +
+				", endDate " + endDate +
+				", daysOfWeek " + daysOfWeek +
+				", startHour " + startHour +
+				", endHour " + endHour +
+				", timeslots " + timeslots +
+				", location " + city + " " + name  +
+				", space " + space;
 	}
-	
 }

@@ -1,66 +1,35 @@
 package scheduleManager;
 
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class DayTimeSlot {
-	private String dayOfTheWeek;
-	private String startTime;
-	private String endTime;
-	
-	public DayTimeSlot() {
-		this.dayOfTheWeek = null;
-		this.startTime = null;
-		this.endTime = null;
-	}
-	
-	public DayTimeSlot(String dayOfTheWeek, String startTime, String endTime) {
-		this.dayOfTheWeek = dayOfTheWeek;
-		this.startTime = startTime;
-		this.endTime = endTime;
-	}
+	private String day;
+	private LocalTime start;
+	private LocalTime end;
 
-	public String getDayOfTheWeek() {
-		return dayOfTheWeek;
-	}
-
-	public void setDayOfTheWeek(String dayOfTheWeek) {
-		this.dayOfTheWeek = dayOfTheWeek;
-	}
-
-	public String getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-
-	public String getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
+	public DayTimeSlot(String day, LocalTime start, LocalTime end) {
+		this.day = day;
+		this.start = start;
+		this.end = end;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DayTimeSlot other = (DayTimeSlot) obj;
-		return Objects.equals(dayOfTheWeek, other.dayOfTheWeek) && Objects.equals(endTime, other.endTime)
-				&& Objects.equals(startTime, other.startTime);
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof DayTimeSlot)) return false;
+		DayTimeSlot timeslot = (DayTimeSlot) o;
+		return day.equals(timeslot.day) && start.equals(timeslot.start) && end.equals(timeslot.end);
 	}
 
 	@Override
-	public String toString() {
-		return "DayTimeSlot [dayOfTheWeek=" + dayOfTheWeek + ", startTime=" + startTime + ", endTime=" + endTime
-				+ ", getDayOfTheWeek()=" + getDayOfTheWeek() + ", getStartTime()=" + getStartTime() + ", getEndTime()="
-				+ getEndTime() + "]";
+	public int hashCode() {
+		return Objects.hash(day, start, end);
+	}
+
+	@Override
+	public String toString(){
+		return "\nday " + this.day + "\nstart " + this.start  + "\nend " + this.end;
 	}
 	
 }
