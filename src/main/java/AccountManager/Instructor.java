@@ -17,7 +17,7 @@ public class Instructor extends Account{
 		super(firstName, lastName, offeringCatalog);
 		this.phoneNumber = phoneNumber;
 		this.specialization = specialization;
-		this.availability = new Schedule();
+		//this.availability = new Schedule();
 	}
 
 	public String getPhoneNumber() {

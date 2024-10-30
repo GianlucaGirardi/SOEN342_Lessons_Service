@@ -35,10 +35,10 @@ public class Main {
 
                     String insertSQL = "INSERT INTO TestTable (name) VALUES (?)";
                     try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-                        pstmt.setString(1, "Test Name 1");
+                        pstmt.setString(1, "Luca");
                         pstmt.executeUpdate();
 
-                        pstmt.setString(1, "Test Name 2");
+                        pstmt.setString(1, "Asim");
                         pstmt.executeUpdate();
                         System.out.println("Data inserted successfully.");
                     }
