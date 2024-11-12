@@ -1,72 +1,33 @@
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.*;
-import java.util.Properties;
+import mapper.HibernateTest;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 public class Main {
     public static void main(String[] args) {
-        Properties props = new Properties();
-        try (InputStream input = Main.class.getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
-                System.out.println("Unable to find config.properties");
-                return;
-            }
-            props.load(input);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        // Create a session factory and configure it with entity class
+        SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(HibernateTest.class) // Specify the entity class
+                .buildSessionFactory();
 
-        String url = props.getProperty("db.url");
-        String user = props.getProperty("db.user");
-        String password = props.getProperty("db.password");
+        // Open a session
+        Session session = factory.openSession();
 
         try {
-            /*  load MySQL driver */
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection conn = DriverManager.getConnection(url, user, password)) {
-                if (conn != null) {
-                    System.out.println("Connected to the database!");
+            // Create an object that will be persisted (UUID is generated in the constructor)
+            HibernateTest test = new HibernateTest("Test Namess");
 
-                    String createTableSQL = "CREATE TABLE TestTable (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))";
-                    try (Statement stmt = conn.createStatement()) {
-                        stmt.execute(createTableSQL);
-                        System.out.println("Table created successfully.");
-                    }
+            // Start a transaction
+            session.beginTransaction();
 
-                    String insertSQL = "INSERT INTO TestTable (name) VALUES (?)";
-                    try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
-                        pstmt.setString(1, "Luca");
-                        pstmt.executeUpdate();
+            // Persist the object
+            session.save(test);
 
-                        pstmt.setString(1, "Asim");
-                        pstmt.executeUpdate();
-                        System.out.println("Data inserted successfully.");
-                    }
-
-                    String selectSQL = "SELECT * FROM TestTable";
-                    try (Statement stmt = conn.createStatement();
-                         ResultSet rs = stmt.executeQuery(selectSQL)) {
-
-                        System.out.println("Data in TestTable:");
-                        while (rs.next()) {
-                            int id = rs.getInt("id");
-                            String name = rs.getString("name");
-                            System.out.println("ID: " + id + ", Name: " + name);
-                        }
-                    }
-
-                    String dropTableSQL = "DROP TABLE TestTable";
-                    try (Statement stmt = conn.createStatement()) {
-                        stmt.execute(dropTableSQL);
-                        System.out.println("Table dropped successfully.");
-                    }
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            System.err.println("MySQL JDBC Driver not found.");
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            // Commit the transaction (which will insert the record)
+            session.getTransaction().commit();
+        } finally {
+            factory.close();  //close the factory to release resources
         }
     }
 }
