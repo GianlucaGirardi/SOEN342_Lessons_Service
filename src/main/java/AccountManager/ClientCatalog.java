@@ -35,20 +35,20 @@ public class ClientCatalog {
 		return false;
 	}
 
-	public boolean login(String username, String password) {
+	public Client login(String username, String password) {
 		for (Client client : clients) {
 			if (client.getUserName().equals(username)) {
 				if (client.getPassword().equals(password)) {
 					System.out.println("Login successful!");
-					return true;
+					return client;
 				} else {
 					System.out.println("Invalid password.");
-					return false;
+					return null;
 				}
 			}
 		}
 		System.out.println("Username not found.");
-		return false;
+		return null;
 	}
 
 	public void addClient(Client client) {

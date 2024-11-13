@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Administrator extends Account {
-	private static volatile Administrator admin;
+	private static volatile Administrator admin;  // Singleton instance
 	private ClientCatalog clientCatalog;
 	private InstructorCatalog instructorCatalog;
 
@@ -31,6 +31,20 @@ public class Administrator extends Account {
 			System.out.println("An admin already exists.");
 		}
 		return admin;
+	}
+
+	public Administrator login(String userName, String password) {
+		if (admin == null) {
+			return null;
+		}
+		// Admin login check
+		if (admin.getUserName().equals(userName) && admin.getPassword().equals(password)) {
+			System.out.println("Administrator logged in successfully.");
+			return admin;
+		} else {
+			System.out.println("Invalid username or password.");
+			return null;
+		}
 	}
 
 	public ClientCatalog getClientCatalog() {
@@ -68,7 +82,7 @@ public class Administrator extends Account {
 	}
 
 	public void createLesson(String lessonName, int initialCapacity, String city, String locationName, String space,
-							   LocalDate startDate, LocalDate endDate, String daysOfWeek, LocalTime startHour, LocalTime endHour, LessonCatalog lessonCatalog) {
+							 LocalDate startDate, LocalDate endDate, String daysOfWeek, LocalTime startHour, LocalTime endHour, LessonCatalog lessonCatalog) {
 		Lesson newLesson = lessonCatalog.createLesson(lessonName, initialCapacity, city, locationName, space,
 				startDate, endDate, daysOfWeek, startHour, endHour);
 		if (newLesson != null) {
