@@ -44,9 +44,11 @@ public class Schedule {
 		return slots;
 	}
 
-	public  boolean checkForOverlap(String newCity, String newName, LocalDate newStartDate, LocalDate newEndDate, String newDaysOfWeek, LocalTime newStartHour, LocalTime newEndHour) {
+	public boolean checkForOverlap(String newCity, String newLocationName, LocalDate newStartDate, LocalDate newEndDate,
+								   String newDaysOfWeek, LocalTime newStartHour, LocalTime newEndHour) {
 		Set<DayTimeSlot> newTimeslots = new HashSet<>();
 		ArrayList<String> newDaysOfWeekArr = new ArrayList<>(Arrays.asList(newDaysOfWeek.split("#")));
+
 		for (String day : newDaysOfWeekArr) {
 			LocalTime slotStart = newStartHour;
 			while (!slotStart.isAfter(newEndHour.minusMinutes(30))) {
@@ -55,13 +57,15 @@ public class Schedule {
 				slotStart = slotEnd;
 			}
 		}
-			if ((this.startDate.isBefore(newEndDate) || this.endDate.isAfter(newStartDate)) && this.city.equals(newCity) && this.name.equals(newName)) {
+		if (this.city.equals(newCity) && this.name.equals(newLocationName)) {
+			if (!(this.endDate.isBefore(newStartDate) || this.startDate.isAfter(newEndDate))) {
 				for (DayTimeSlot el : newTimeslots) {
 					if (this.timeslots.contains(el)) {
 						return true;
 					}
 				}
 			}
+		}
 		return false;
 	}
 

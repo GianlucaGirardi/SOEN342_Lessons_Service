@@ -3,64 +3,95 @@ package AccountManager;
 import java.util.ArrayList;
 
 import lessonServices.Booking;
-import lessonServices.OfferingCatalog;
+import lessonServices.LessonCatalog;
 
-public class LegalGuardianClient extends Client{
-	private String dependentFirstName;
-	private String dependentLastName;
-	private int dependentAge;
-	private ArrayList<Booking> dependentBookings;
-	
-	public LegalGuardianClient(String firstName, String lastName, OfferingCatalog offeringCatalog, int age, String dependentFirstName, String dependentLastName, int dependentAge) {
-		super(firstName, lastName, offeringCatalog, age);
-		this.dependentAge = dependentAge;
-		this.dependentLastName = dependentLastName;
-		this.dependentFirstName = dependentFirstName;
-		this.dependentBookings = new ArrayList<Booking>();
+public class LegalGuardianClient extends Client {
+	private ArrayList<Client> legalGuardians;
+	private ArrayList<Booking> bookings;
+
+	public LegalGuardianClient(String firstName, String lastName, String userName, String password, LessonCatalog lessonCatalog, int age, ArrayList<Client> legalGuardians) {
+		super(firstName, lastName, userName, password, lessonCatalog, age);  // Initialize superclass (Client) fields
+		this.legalGuardians = legalGuardians;
+		this.bookings = new ArrayList<Booking>();
 	}
 
-	public String getDependentFirstName() {
-		return dependentFirstName;
+
+	public ArrayList<Client> getLegalGuardians() {
+		return legalGuardians;
 	}
 
-	public void setDependentFirstName(String dependentFirstName) {
-		this.dependentFirstName = dependentFirstName;
+
+	public void setLegalGuardians(ArrayList<Client> legalGuardians) {
+		this.legalGuardians = legalGuardians;
 	}
 
-	public String getDependentLastName() {
-		return dependentLastName;
+
+	public ArrayList<Booking> getBookings() {
+		return bookings;
 	}
 
-	public void setDependentLastName(String dependentLastName) {
-		this.dependentLastName = dependentLastName;
+	public void setBookings(ArrayList<Booking> bookings) {
+		this.bookings = bookings;
 	}
 
-	public int getDependentAge() {
-		return dependentAge;
+	public void addLegalGuardian(Client legalGuardian) {
+		if (legalGuardian != null) {
+			this.legalGuardians.add(legalGuardian);
+		} else {
+			System.out.println("Cannot add null legal guardian.");
+		}
 	}
 
-	public void setDependentAge(int dependentAge) {
-		this.dependentAge = dependentAge;
+	public boolean removeLegalGuardian(String userName) {
+		return legalGuardians.removeIf(legalGuardian -> legalGuardian.getUserName().equals(userName));
 	}
 
-	public ArrayList<Booking> getDependentBookings() {
-		return dependentBookings;
+	public void addBooking(Booking booking) {
+		if (booking != null) {
+			this.bookings.add(booking);
+		} else {
+			System.out.println("Cannot add null booking.");
+		}
 	}
 
-	public void setDependentBookings(ArrayList<Booking> dependentBookings) {
-		this.dependentBookings = dependentBookings;
-	}
+//	public boolean removeBooking(String bookingId) {
+//		return bookings.removeIf(booking -> booking.getBookingId().equals(bookingId));
+//	}
+
+//	public Booking findBooking(String bookingId) {
+//		return bookings.stream()
+//				.filter(booking -> booking.getBookingId().equals(bookingId))
+//				.findFirst()
+//				.orElse(null);  // Return null if no booking is found
+//	}
+
+//	public boolean canBookLesson(Booking booking) {
+//		// Iterate through legal guardians to check if any of them have booked the same lesson
+//		for (Client guardian : legalGuardians) {
+//			for (Booking guardianBooking : guardian.getBookings()) {
+//				if (guardianBooking.getLessonId().equals(booking.getLessonId())) {
+//					return true;  // Guardian is attending the same lesson, booking is allowed
+//				}
+//			}
+//		}
+//		return false;  // No guardian is attending this lesson
+//	}
+
+//	public boolean bookLesson(Booking booking) {
+//		if (canBookLesson(booking)) {
+//			this.addBooking(booking);  // Add the booking if a legal guardian is attending
+//			System.out.println("Lesson booked successfully for " + this.getUserName());
+//			return true;
+//		} else {
+//			System.out.println("Booking failed: No legal guardian is attending this lesson.");
+//			return false;
+//		}
+//	}
 
 	@Override
 	public String toString() {
-		return "LegalGuardianClient" + super.toString() + " dependentFirstName=" + dependentFirstName + ", dependentLastName="
-				+ dependentLastName + ", dependentAge=" + dependentAge + ", dependentBookings=" + dependentBookings;
+		return "LegalGuardianClient " + super.toString() +
+				", legalGuardians=" + legalGuardians +
+				", bookings=" + bookings;
 	}
-	
-	
-	// addBooking
-	
-	// findBooking
-	
-	
 }

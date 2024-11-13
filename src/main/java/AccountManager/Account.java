@@ -1,38 +1,32 @@
 package AccountManager;
 
-import lessonServices.OfferingCatalog;
+import lessonServices.LessonCatalog;
 
 public class Account {
-	private static long accountCounter = 1000000;
-	private long ACCOUNT_ID = accountCounter;
-	private OfferingCatalog offeringCatalog;
+	private final String userName;   // Primary key
+	private String password;
+	private LessonCatalog lessonCatalog;
 	private String firstName;
 	private String lastName;
-	
-	public Account() {
-		accountCounter++;
-		this.offeringCatalog = null;
-		this.firstName = null;
-		this.lastName = null;
-	}
-	
-	public Account(String firstName, String lastName, OfferingCatalog offeringCatalog) {
-		accountCounter++;
-		this.offeringCatalog = offeringCatalog;
+
+	public Account(String firstName, String lastName, String userName, String password, LessonCatalog lessonCatalog) {
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.userName = userName;  // Primary key
+		this.password = password;
+		this.lessonCatalog = lessonCatalog;
 	}
 
-	public long getACCOUNT_ID() {
-		return ACCOUNT_ID;
+	public String getUserName() {
+		return userName;
 	}
 
-	public OfferingCatalog getOfferingCatalog() {
-		return offeringCatalog;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setOfferingCatalog(OfferingCatalog offeringCatalog) {
-		this.offeringCatalog = offeringCatalog;
+	public LessonCatalog getLessonCatalog() {
+		return lessonCatalog;
 	}
 
 	public String getFirstName() {
@@ -53,7 +47,21 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "Account id " + ACCOUNT_ID +", firstName=" + firstName
-				+ ", lastName=" + lastName;
+		return "Account [userName=" + userName + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", lessonCatalog=" + (lessonCatalog != null ? lessonCatalog.toString() : "N/A") + "]";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
+		Account account = (Account) obj;
+		return userName.equals(account.userName);
+	}
+
+	@Override
+	public int hashCode() {
+		return userName.hashCode();
 	}
 }
+
