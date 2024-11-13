@@ -15,20 +15,20 @@ public class Main {
         Session session = factory.openSession();
 
         try {
-            // Create an object that will be persisted
-            HibernateTest test = new HibernateTest(2L, "Test Name");
+            // Create an object that will be persisted (UUID is generated in the constructor)
+            HibernateTest test = new HibernateTest("Test Namess");
 
             // Start a transaction
             session.beginTransaction();
 
-            // Persist the object (no immediate return of identifier)
-            session.persist(test);
+            // Persist the object
+            session.save(test);
 
             // Commit the transaction (which will insert the record)
             session.getTransaction().commit();
         } finally {
-            factory.close();
+            factory.close();  //close the factory to release resources
         }
-   }
+    }
 }
 
