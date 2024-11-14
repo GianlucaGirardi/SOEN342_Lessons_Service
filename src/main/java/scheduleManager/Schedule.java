@@ -15,7 +15,7 @@ public class Schedule {
 	private LocalTime endHour;
 	private Set<DayTimeSlot> timeslots;
 	private String city;
-	private String name;
+	private String location;
 	private String space;
 
 	public Schedule(String city, String name, String space, LocalDate startDate, LocalDate endDate, String daysOfWeek, LocalTime startHour, LocalTime endHour) {
@@ -26,7 +26,7 @@ public class Schedule {
 		this.endHour = endHour;
 		this.timeslots = generateTimeslots();
 		this.city = city;
-		this.name = name;
+		this.location = name;
 		this.space = space;
 	}
 
@@ -61,7 +61,7 @@ public class Schedule {
 				slotStart = slotEnd;
 			}
 		}
-		if (this.city.equals(newCity) && this.name.equals(newLocationName)) {
+		if (this.city.equals(newCity) && this.location.equals(newLocationName)) {
 			if (!(this.endDate.isBefore(newStartDate) || this.startDate.isAfter(newEndDate))) {
 				for (DayTimeSlot el : newTimeslots) {
 					if (this.timeslots.contains(el)) {
@@ -82,7 +82,7 @@ public class Schedule {
 				", startHour " + startHour +
 				", endHour " + endHour +
 				", timeslots " + timeslots +
-				", location " + city + " " + name  +
+				", location " + city + " " + location +
 				", space " + space;
 	}
 }

@@ -1,16 +1,33 @@
+import AccountManager.ClientCatalog;
+import AccountManager.InstructorCatalog;
+import AccountManager.Administrator;
+import lessonServices.LessonCatalog;
 import mapper.HibernateTest;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
+        LessonCatalog newLessonCatalog = new LessonCatalog();
+        InstructorCatalog newInstructorCatalog = new InstructorCatalog();
+        ClientCatalog newClientCatalog = new ClientCatalog(newInstructorCatalog);
+        newInstructorCatalog.setClientCatalog(newClientCatalog);
+        Administrator admin = null;
+
+
+
+
+
 
         while (!exit) {
             System.out.println("\nChoose an option:");
@@ -26,13 +43,13 @@ public class Main {
 
                 switch (choice) {
                     case 1:
-                        viewOfferings();
+                        viewOfferings(newLessonCatalog);
                         break;
                     case 2:
-                        register(scanner);
+                        register(scanner, newLessonCatalog, newInstructorCatalog, newClientCatalog, admin);
                         break;
                     case 3:
-                        signIn();
+                        signIn(scanner, newLessonCatalog, newInstructorCatalog, newClientCatalog, admin);
                         break;
                     case 4:
                         System.out.println("Exiting program...");
@@ -50,12 +67,16 @@ public class Main {
         scanner.close();
     }
 
-    public static void viewOfferings() {
-        System.out.println("Viewing all offerings...");
-        // Add code to display offerings
+    public static void viewOfferings(LessonCatalog newLessonCatalog) {
+        newLessonCatalog.displayLessons();
     }
 
-    public static void register(Scanner scanner) {
+
+
+    public static void register(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog, ClientCatalog newClientCatalog, Administrator admin) {
+
+
+
         System.out.println("\nRegister as:");
         System.out.println("1. Admin");
         System.out.println("2. Instructor");
@@ -110,8 +131,22 @@ public class Main {
             System.out.print("Enter specialization: ");
             String instructorSpecialization = scanner.nextLine();
 
-            System.out.print("Enter availabilities: ");
-            String instructorAvailabilities = scanner.nextLine();
+            ArrayList<String> newAvailabilities = new ArrayList<>();
+
+            System.out.println("Enter availabilities (type 'done' to finish):");
+
+            while (true) {
+                System.out.print("Enter availability: ");
+                String availability = scanner.nextLine();
+
+                if ("done".equalsIgnoreCase(availability)) {
+                    break;
+                }
+
+                newAvailabilities.add(availability);
+            }
+
+            System.out.println("Availabilities entered: " + newAvailabilities);
 
             System.out.print("Enter password: ");
             String instructorPassword = scanner.nextLine();
@@ -122,8 +157,10 @@ public class Main {
             System.out.println("Username: " + instructorUsername);
             System.out.println("Phone Number: " + instructorPhoneNumber);
             System.out.println("Specialization: " + instructorSpecialization);
-            System.out.println("Availabilities: " + instructorAvailabilities);
+            System.out.println("Availabilities: " + newAvailabilities);
             System.out.println("Password: [hidden for security]");
+
+            System.out.println(newInstructorCatalog.register(instructorFirstName, instructorLastName, instructorUsername, instructorPassword, newLessonCatalog, instructorPhoneNumber, instructorSpecialization, newAvailabilities));
 
         } else if ("Client".equals(role)) {
             // Fields specific to Client
@@ -143,6 +180,7 @@ public class Main {
                 System.out.print("Enter legal guardian username: ");
                 String legalGuardianUsername = scanner.nextLine();
                 System.out.print("Enter password: ");
+                String password = scanner.nextLine();
                 String clientPassword = scanner.nextLine();
 
                 System.out.println("\nRegistration complete for Client.");
@@ -150,6 +188,9 @@ public class Main {
                 System.out.println("Name: " + clientFirstName + " " + clientLastName);
                 System.out.println("Username: " + clientUsername);
                 System.out.println("Password: [hidden for security]");
+
+                System.out.println(newClientCatalog.register(clientFirstName, clientLastName, clientUsername, clientPassword, newLessonCatalog, clientAge));
+
             }
             else {
 
@@ -161,6 +202,8 @@ public class Main {
                 System.out.println("Name: " + clientFirstName + " " + clientLastName);
                 System.out.println("Username: " + clientUsername);
                 System.out.println("Password: [hidden for security]");
+
+                System.out.println(newClientCatalog.register(clientFirstName, clientLastName, clientUsername, clientPassword, newLessonCatalog, clientAge));
             }
 
         } else {
@@ -182,14 +225,96 @@ public class Main {
             System.out.println("Name: " + adminFirstName + " " + adminLastName);
             System.out.println("Username: " + adminUsername);
             System.out.println("Password: [hidden for security]");
+
+            admin = Administrator.getAdministrator(adminFirstName,adminLastName, adminUsername, adminPassword, newLessonCatalog, newClientCatalog, newInstructorCatalog);
+
+
         }
 
         // Message before returning to the main menu
         System.out.println("\nReturning to main menu...");
     }
 
-    public static void signIn() {
-        System.out.println("Signing in...");
-        // Add sign-in logic here
+    public static void signIn(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog, ClientCatalog newClientCatalog, Administrator admin) {
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        if(newInstructorCatalog.login(username, password)) {
+            instructorMain(scanner, newLessonCatalog, newInstructorCatalog);
+
+        }
+        else if(newClientCatalog.login(username, password)) {
+            clientMain(scanner, newLessonCatalog, newClientCatalog);
+
+        }
+        //else if
+        else {
+            administratorMain(scanner, newLessonCatalog, admin);
+
+        }
+        //else
+
+
+    }
+
+    public static void instructorMain(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog) {
+        //view all lessons
+        //take on lessons
+        boolean leave = false;
+        while (!leave) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. View all offerings");
+            System.out.println("2. take on offering");
+            System.out.println("3. sign out");
+
+            System.out.print("Enter your choice: ");
+
+
+            try {
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        //view all offerings that can be taken up
+                        break;
+                    case 2:
+                        //take on offering
+                        break;
+                    case 3:
+                        System.out.println("signing out...");
+                        leave = true;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                scanner.next(); // Clear the invalid input from the scanner
+            }
+        }
+
+    }
+
+    public static void clientMain(Scanner scanner, LessonCatalog newLessonCatalog, ClientCatalog newClientCatalog) {
+        //view all offerings taken up by instructors
+        //view my bookings
+        //make booking
+        //cancel booking
+
+
+    }
+
+    public static void administratorMain(Scanner scanner, LessonCatalog newLessonCatalog, Administrator admin) {
+        //view all instructors
+        //view all clients
+        //view all offerings that can be taken up by instructors
+        //view all offerings available to clients
+        //view all clients bookings
+        //cancel bookings
+
+
     }
 }
