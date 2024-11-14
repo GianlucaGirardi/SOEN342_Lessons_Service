@@ -1,36 +1,46 @@
 package AccountManager;
 
+import lessonServices.Booking;
 import lessonServices.BookingCatalog;
+import lessonServices.Lesson;
 import lessonServices.LessonCatalog;
 
-public class Client extends Account{
+public class Client extends Account {
 	private int age;
 	private BookingCatalog bookingCatalog;
-	
+
 	public Client(String firstName, String lastName, String userName, String password, LessonCatalog lessonCatalog, int age) {
 		super(firstName, lastName, userName, password, lessonCatalog);
 		this.age = age;
 		this.bookingCatalog = new BookingCatalog();
 	}
-	
+
 	public int getAge() {
 		return this.age;
 	}
-	
+
 	public void setAge(int age) {
 		this.age = age;
 	}
-	
+
 	public BookingCatalog getBookingCatalog() {
 		return this.bookingCatalog;
 	}
-	
-	public void  setBookingCatalog(BookingCatalog bookingCatalog) {
+
+	public void setBookingCatalog(BookingCatalog bookingCatalog) {
 		this.bookingCatalog = bookingCatalog;
 	}
-	
+
 	public void displayAllAssociatedBookings() {
 		this.bookingCatalog.displayAllBookings();
+	}
+
+	public Booking bookLesson(long lessonId) {
+		Lesson lesson = super.getLessonCatalog().searchLessonById(lessonId);
+		if (lesson == null || !lesson.isAvailable()) {
+			return null;
+		}
+		return bookingCatalog.bookLesson(lesson);
 	}
 
 	@Override
@@ -45,9 +55,11 @@ public class Client extends Account{
 	public int hashCode() {
 		return getUserName().hashCode();
 	}
-	
+
+	@Override
 	public String toString() {
-		return super.toString() + "age= " + this.age;
+		return super.toString() + " age= " + this.age;
 	}
 }
+
 

@@ -10,6 +10,7 @@ public class Lesson {
 	private long LESSON_ID;
 	private String name;
 	private int initialCapacity;
+	private int currentCapacity;
 	private String lessonType;
 	private Schedule schedule;
 	private ArrayList<Booking> bookings;
@@ -19,12 +20,13 @@ public class Lesson {
 		LESSON_ID = lessonsCnter++;
 		this.name = validateLessonName(lessonName);
 		this.initialCapacity = initialCapacity;
+		this.currentCapacity = this.initialCapacity;
 		this.lessonType = getLessonType(initialCapacity);
 		this.schedule = new Schedule(city, locationName, space, startDate, endDate, daysOfWeek, startHour, endHour);
 		this.bookings = new ArrayList<>();
 	}
 
-	public long getLESSON_ID(){
+	public long getLESSON_ID() {
 		return LESSON_ID;
 	}
 
@@ -35,16 +37,20 @@ public class Lesson {
 		return lessonName;
 	}
 
-	public int getInitialCapacity(){
+	public int getInitialCapacity() {
 		return this.initialCapacity;
 	}
 
+	public int getCurrentCapacity() {
+		return this.currentCapacity;
+	}
+
+	public void setCurrentCapacity(int newCapacity) {
+		this.currentCapacity = newCapacity;
+	}
+
 	public String getLessonType(int initialCapacity) {
-		if (initialCapacity > 1) {
-			return "group";
-		} else {
-			return "private";
-		}
+		return initialCapacity > 1 ? "group" : "private";
 	}
 
 	public boolean checkForScheduleOverlap(String city, String locationName, LocalDate startDate, LocalDate endDate,
@@ -53,12 +59,13 @@ public class Lesson {
 	}
 
 	public boolean isAvailable() {
-		return bookings.size() < this.getInitialCapacity();
+		return currentCapacity > 0;
 	}
 
 	public void addBooking(Booking booking) {
 		if (isAvailable()) {
 			bookings.add(booking);
+			setCurrentCapacity(currentCapacity - 1);
 		} else {
 			System.out.println("No more spots available for this lesson.");
 		}

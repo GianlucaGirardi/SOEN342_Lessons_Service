@@ -40,20 +40,20 @@ public class InstructorCatalog {
 		return false;
 	}
 
-	public boolean login(String username, String password) {
+	public Instructor login(String username, String password) {
 		for (Instructor instructor : instructors) {
 			if (instructor.getUserName().equals(username)) {
 				if (instructor.getPassword().equals(password)) {
 					System.out.println("Login successful!");
-					return true;
+					return instructor;
 				} else {
 					System.out.println("Invalid password.");
-					return false;
+					return null;
 				}
 			}
 		}
 		System.out.println("Username not found.");
-		return false;
+		return null;
 	}
 
 	public Instructor findInstructorByPhoneNumber(String phoneNumber) {
