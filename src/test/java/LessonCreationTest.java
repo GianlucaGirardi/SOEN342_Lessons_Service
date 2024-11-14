@@ -77,6 +77,6 @@ public class LessonCreationTest {
                 LocalDate.of(2024, 11, 20), LocalDate.of(2024, 12, 20), "Tue#Thu", LocalTime.of(12, 0), LocalTime.of(14, 0));
 
         // Display all lessons to console
-        lessonCatalog.displayLessons();
+        lessonCatalog.displayAllLessons();
     }
 }

@@ -90,7 +90,7 @@ public class ClientBookingTest {
         assertNull(booking2, "Client2 should not be able to book the lesson because it is full.");
 
         // Client1 unbooks the lesson, space++
-        boolean unbookingResult = client1.getBookingCatalog().unBookLesson(booking1.getBookingId());
+        boolean unbookingResult = client1.unBookLesson(booking1.getBookingId());
         assertTrue(unbookingResult, "Client1 should be able to unbook the lesson.");
         assertEquals(lesson.getCurrentCapacity(), 1, "Lesson's capacity should increase after unbooking.");
 

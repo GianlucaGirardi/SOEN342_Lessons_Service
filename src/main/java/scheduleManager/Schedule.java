@@ -30,6 +30,10 @@ public class Schedule {
 		this.space = space;
 	}
 
+	public String getCity(){
+		return this.city;
+	}
+
 	private Set<DayTimeSlot> generateTimeslots() {
 		Set<DayTimeSlot> slots = new HashSet<>();
 		ArrayList<String> daysOfWeekArr = new ArrayList<>(Arrays.asList(this.daysOfWeek.split("#")));

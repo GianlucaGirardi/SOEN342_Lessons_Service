@@ -51,31 +51,42 @@ public class Instructor extends Account {
 	}
 
 
-//	public void addTakenUpLesson(Lesson lesson) {
-//		if (lessonCatalog.isAvailable(lesson)) {
-//			this.takenUpLessons.add(lesson);
-//		} else {
-//			System.out.println("Lesson is not available in the catalog.");
-//		}
-//	}
-//
-//	public boolean removeTakenUpLesson(String lessonId) {
-//		for (Lesson lesson : takenUpLessons) {
-//			if (lesson.getLESSON_ID().equals(lessonId)) {
-//				takenUpLessons.remove(lesson);
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
-//	public boolean isAvailableInCityForLesson(Lesson lesson) {
-//		return availabilities.contains(lesson.getCity());
-//	}
+	public boolean takeUpLesson(long lessonId) {
+		Lesson lesson = this.lessonCatalog.searchLessonById(lessonId);
+		if (lesson != null) {
+			if (lesson.getInstructor() != null) {
+				System.out.println("This lesson already has an instructor.");
+				return false;
+			}
+
+			String location = lesson.getSchedule().getCity();
+			for (String availability : availabilities) {
+				if (availability.equals(location)) {
+					lesson.setInstructor(this);
+					return this.takenUpLessons.add(lesson);
+				}
+			}
+		}
+		System.out.println("Instructor cannot take up the lesson due to location mismatch or other reasons.");
+		return false;
+	}
+
+	public boolean removeTakenUpLesson(long lessonId) {
+		Lesson lesson = this.lessonCatalog.searchLessonById(lessonId);
+		if(lesson != null && takenUpLessons.contains(lesson)){
+			lesson.setInstructor(null);
+			takenUpLessons.remove(lesson);
+			System.out.println("Lesson successfully removed.");
+			return true;
+		}
+		System.out.println("Could not find a lesson with a matching id.");
+		return false;
+	}
+
 
 	@Override
 	public String toString() {
-		return "Instructor " + super.toString() + " [phone number=" + phoneNumber + ", specialization=" + specialization +
-				", availability cities=" + availabilities + ", takenUpLessons=" + takenUpLessons + ", offeringCatalog=" + lessonCatalog + "]";
+		return String.format("Instructor [userName=%s, firstName=%s, lastName=%s, phone number=%s, specialization=%s, availability cities=%s, takenUpLessons=%s]",
+				getUserName(), getFirstName(), getLastName(), phoneNumber, specialization, availabilities.toString(), takenUpLessons.toString());
 	}
 }
