@@ -50,7 +50,21 @@ public class LessonCatalog {
 		return result;
 	}
 
-	public void displayLessons() {
+	// Displays lesson which are taken up by instructors
+	public void displayLessons(){
+		if (lessons.isEmpty()) {
+			System.out.println("No lessons available.");
+		} else {
+			for (Lesson lesson : lessons) {
+				if(lesson.getInstructor() != null){
+					System.out.println(lesson);
+				}
+			}
+		}
+	}
+
+	// Dsiplays all lessons
+	public void displayAllLessons() {
 		if (lessons.isEmpty()) {
 			System.out.println("No lessons available.");
 		} else {

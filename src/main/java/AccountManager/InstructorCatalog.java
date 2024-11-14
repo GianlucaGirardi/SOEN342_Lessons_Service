@@ -13,6 +13,10 @@ public class InstructorCatalog {
 		this.clientCatalog = null;
 	}
 
+	public ArrayList<Instructor> getInstructors(){
+		return this.instructors;
+	}
+
 	public void setClientCatalog(ClientCatalog clientCatalog) {
 		this.clientCatalog = clientCatalog;
 	}

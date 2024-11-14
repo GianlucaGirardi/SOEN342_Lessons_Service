@@ -1,5 +1,6 @@
 package lessonServices;
 
+import AccountManager.Instructor;
 import scheduleManager.Schedule;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,6 +15,7 @@ public class Lesson {
 	private String lessonType;
 	private Schedule schedule;
 	private ArrayList<Booking> bookings;
+	private Instructor instructor = null;
 
 	public Lesson(String lessonName, int initialCapacity, String city, String locationName, String space,
 				  LocalDate startDate, LocalDate endDate, String daysOfWeek, LocalTime startHour, LocalTime endHour) {
@@ -30,11 +32,19 @@ public class Lesson {
 		return LESSON_ID;
 	}
 
+	public static void setLessonsCounter(long value) {
+		lessonsCnter = value;
+	}
+
 	private String validateLessonName(String lessonName) {
 		if (lessonName == null || lessonName.trim().isEmpty()) {
 			throw new IllegalArgumentException("Lesson name cannot be null or empty.");
 		}
 		return lessonName;
+	}
+
+	public Schedule getSchedule(){
+		return this.schedule;
 	}
 
 	public int getInitialCapacity() {
@@ -47,6 +57,14 @@ public class Lesson {
 
 	public void setCurrentCapacity(int newCapacity) {
 		this.currentCapacity = newCapacity;
+	}
+
+	public Instructor getInstructor(){
+		return this.instructor;
+	}
+
+	public void setInstructor(Instructor instructor){
+		this.instructor = instructor;
 	}
 
 	public String getLessonType(int initialCapacity) {

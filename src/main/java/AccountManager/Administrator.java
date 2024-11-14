@@ -60,7 +60,7 @@ public class Administrator extends Account {
 	}
 
 	public void displayLessons(){
-		this.getLessonCatalog().displayLessons();
+		this.getLessonCatalog().displayAllLessons();
 	}
 
 	public void displayClients() {

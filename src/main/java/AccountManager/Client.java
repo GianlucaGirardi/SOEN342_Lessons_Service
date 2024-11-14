@@ -43,6 +43,10 @@ public class Client extends Account {
 		return bookingCatalog.bookLesson(lesson);
 	}
 
+	public boolean unBookLesson(long lessonId){
+		return bookingCatalog.unBookLesson(lessonId);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
