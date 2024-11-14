@@ -1,13 +1,21 @@
 import AccountManager.ClientCatalog;
 import AccountManager.InstructorCatalog;
+import AccountManager.Instructor;
 import AccountManager.Administrator;
+import AccountManager.Client;
 import lessonServices.LessonCatalog;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import mapper.HibernateTest;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -22,7 +30,7 @@ public class Main {
         InstructorCatalog newInstructorCatalog = new InstructorCatalog();
         ClientCatalog newClientCatalog = new ClientCatalog(newInstructorCatalog);
         newInstructorCatalog.setClientCatalog(newClientCatalog);
-        Administrator admin = null;
+        Administrator admin = Administrator.getAdministrator("Luca","Rahman", "lr", "123", newLessonCatalog, newClientCatalog, newInstructorCatalog);
 
 
 
@@ -40,6 +48,7 @@ public class Main {
 
             try {
                 int choice = scanner.nextInt();
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
@@ -242,27 +251,33 @@ public class Main {
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
-        if(newInstructorCatalog.login(username, password)) {
-            instructorMain(scanner, newLessonCatalog, newInstructorCatalog);
+        if((newInstructorCatalog.login(username, password))!=null) {
+            System.out.println("Login successful!.");
+            instructorMain(scanner, newLessonCatalog, newInstructorCatalog, newInstructorCatalog.login(username, password));
 
         }
-        else if(newClientCatalog.login(username, password)) {
-            clientMain(scanner, newLessonCatalog, newClientCatalog);
+        else if(newClientCatalog.login(username, password)!=null) {
+            System.out.println("Login successful!.");
+            clientMain(scanner, newLessonCatalog, newClientCatalog, newClientCatalog.login(username, password));
 
         }
         //else if
-        else {
-            administratorMain(scanner, newLessonCatalog, admin);
-
+        else if(admin.login(username, password)!=null){
+            System.out.println("Administrator logged in successfully.");
+            administratorMain(scanner, newLessonCatalog,newInstructorCatalog, newClientCatalog, admin.login(username, password));
+        }
+        else{
+            System.out.println("Invalid username or password.");
         }
         //else
 
 
     }
-
-    public static void instructorMain(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog) {
-        //view all lessons
-        //take on lessons
+    Instructor newInstructor;
+    public static void instructorMain(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog, Instructor newInstructor) {
+          //view all lessons(instructor specific)
+         //take on lessons
+        //remove himself from lesson
         boolean leave = false;
         while (!leave) {
             System.out.println("\nChoose an option:");
@@ -298,22 +313,181 @@ public class Main {
 
     }
 
-    public static void clientMain(Scanner scanner, LessonCatalog newLessonCatalog, ClientCatalog newClientCatalog) {
+    Client newClient;
+    public static void clientMain(Scanner scanner, LessonCatalog newLessonCatalog, ClientCatalog newClientCatalog, Client newClient) {
         //view all offerings taken up by instructors
         //view my bookings
         //make booking
         //cancel booking
+        boolean leave = false;
+        while (!leave) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. View all offerings taken up by instructors");
+            System.out.println("2. View my bookings");
+            System.out.println("3. make booking");
+            System.out.println("4. cancel booking");
+            System.out.println("5. sign out");
+
+            System.out.print("Enter your choice: ");
+
+
+            try {
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        //view all offerings that can be taken up
+                        break;
+                    case 2:
+                        newClient.displayAllAssociatedBookings();
+                        break;
+                    case 3:
+                        System.out.println("Enter the lesson ID");
+                        long lessonId = scanner.nextLong();
+                        newClient.bookLesson(lessonId);
+                        leave = true;
+                        break;
+                    case 4:
+                        System.out.println("signing out...");
+                        leave = true;
+                        break;
+                    case 5:
+                        System.out.println("signing out...");
+                        leave = true;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                scanner.next(); // Clear the invalid input from the scanner
+            }
+        }
 
 
     }
 
-    public static void administratorMain(Scanner scanner, LessonCatalog newLessonCatalog, Administrator admin) {
-        //view all instructors
-        //view all clients
-        //view all offerings that can be taken up by instructors
-        //view all offerings available to clients
-        //view all clients bookings
-        //cancel bookings
+    public static void administratorMain(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog, ClientCatalog newClientCatalog, Administrator admin) {
+
+        boolean leave = false;
+        while (!leave) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. create lesson");
+            System.out.println("2. view instructor catalog");
+            System.out.println("3. view client catalog");
+            System.out.println("4. view lesson catalog"); //view all lesson available to public
+            //view all lesson that instrucor can take on
+            System.out.println("5. delete account");
+            System.out.println("6. sign out");
+
+            System.out.print("Enter your choice: ");
+
+
+            try {
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+                        System.out.print("Enter lesson name: ");
+                        String lessonName = scanner.nextLine();
+
+                        System.out.print("Enter lesson capacity: ");
+                        int initialCapacity = scanner.nextInt();
+                        scanner.nextLine(); // Consume the leftover newline
+
+                        System.out.print("Enter city name: ");
+                        String city = scanner.nextLine();
+
+                        System.out.print("Enter location name: ");
+                        String locationName = scanner.nextLine();
+
+                        System.out.print("Enter space name: ");
+                        String space = scanner.nextLine();
+
+                        // Parse startDate
+                        LocalDate startDate = null;
+                        while (startDate == null) {
+                            System.out.print("Enter start date (yyyy-MM-dd): ");
+                            String startDateInput = scanner.nextLine();
+                            try {
+                                startDate = LocalDate.parse(startDateInput, dateFormatter);
+                            } catch (DateTimeParseException e) {
+                                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                            }
+                        }
+
+                        // Parse endDate
+                        LocalDate endDate = null;
+                        while (endDate == null) {
+                            System.out.print("Enter end date (yyyy-MM-dd): ");
+                            String endDateInput = scanner.nextLine();
+                            try {
+                                endDate = LocalDate.parse(endDateInput, dateFormatter);
+                            } catch (DateTimeParseException e) {
+                                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                            }
+                        }
+
+                        System.out.print("Enter days of the week (day1#day2#day3...): ");
+                        String daysOfWeek = scanner.nextLine();
+
+                        // Parse startHour
+                        LocalTime startHour = null;
+                        while (startHour == null) {
+                            System.out.print("Enter starting hour (HH:mm): ");
+                            String startHourInput = scanner.nextLine();
+                            try {
+                                startHour = LocalTime.parse(startHourInput, timeFormatter);
+                            } catch (DateTimeParseException e) {
+                                System.out.println("Invalid time format. Please use HH:mm.");
+                            }
+                        }
+
+                        // Parse endHour
+                        LocalTime endHour = null;
+                        while (endHour == null) {
+                            System.out.print("Enter ending hour (HH:mm): ");
+                            String endHourInput = scanner.nextLine();
+                            try {
+                                endHour = LocalTime.parse(endHourInput, timeFormatter);
+                            } catch (DateTimeParseException e) {
+                                System.out.println("Invalid time format. Please use HH:mm.");
+                            }
+                        }
+
+                        // Pass parsed LocalDate and LocalTime objects to the createLesson method
+                        newLessonCatalog.createLesson(
+                                lessonName, initialCapacity, city, locationName, space,
+                                startDate, endDate, daysOfWeek, startHour, endHour
+                        );
+                        break;
+                    case 2:
+                        newInstructorCatalog.displayAllInstructors();
+                        break;
+                    case 3:
+                        newClientCatalog.displayAllClients();
+                        break;
+                    case 4:
+                        newLessonCatalog.displayLessons();
+                        break;
+                    case 5:
+                        //delete account
+                        break;
+                    case 6:
+                        System.out.println("signing out...");
+                        leave = true;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter a number between 1 and 4.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                scanner.next(); // Clear the invalid input from the scanner
+            }
+        }
 
 
     }
