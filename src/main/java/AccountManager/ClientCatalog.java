@@ -48,15 +48,15 @@ public class ClientCatalog {
 		for (Client client : clients) {
 			if (client.getUserName().equals(username)) {
 				if (client.getPassword().equals(password)) {
-					System.out.println("Login successful!");
+					//System.out.println("Login successful!");
 					return client;
 				} else {
-					System.out.println("Invalid password.");
+					//System.out.println("Invalid password.");
 					return null;
 				}
 			}
 		}
-		System.out.println("Username not found.");
+		//System.out.println("Username not found.");
 		return null;
 	}
 

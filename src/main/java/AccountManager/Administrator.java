@@ -41,10 +41,10 @@ public class Administrator extends Account {
 		}
 		// Admin login check
 		if (admin.getUserName().equals(userName) && admin.getPassword().equals(password)) {
-			System.out.println("Administrator logged in successfully.");
+			//System.out.println("Administrator logged in successfully.");
 			return admin;
 		} else {
-			System.out.println("Invalid username or password.");
+			//System.out.println("Invalid username or password.");
 			return null;
 		}
 	}

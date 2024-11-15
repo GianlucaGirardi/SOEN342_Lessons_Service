@@ -58,7 +58,9 @@ public class Client extends Account {
 			System.out.println("Lesson is full. Cannot book this lesson.");
 			return null;
 		}
+		System.out.println("successfully booked lesson");
 		return bookingCatalog.bookLesson(lesson);
+
 	}
 
 public boolean unBookLesson(long lessonId){
