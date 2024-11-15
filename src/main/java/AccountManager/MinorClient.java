@@ -5,16 +5,24 @@ import java.util.ArrayList;
 import lessonServices.Booking;
 import lessonServices.LessonCatalog;
 
-public class MinorClient extends Client {
+public class MinorClient extends Client{
 	private String guardianFirstName;
 	private String guardianLastName;
 	private int guardianAge;
+	private ArrayList<Booking> minorBookings;
+	private String userName;
 
 	public MinorClient(String firstName, String lastName, String userName, String password, LessonCatalog lessonCatalog, int age, String guardianFName, String guardianLName, int guardianAge) {
 		super(firstName, lastName, userName, password, lessonCatalog, age);
 		this.guardianFirstName = guardianFName;
 		this.guardianLastName = guardianLName;
 		this.guardianAge = guardianAge;
+		this.minorBookings = super.getBookingCatalog().getBookings();
+		this.userName=userName;
+	}
+
+	public String getUserName(){
+		return this.userName;
 	}
 
 	public String getGuardianFirstName() {
@@ -39,7 +47,7 @@ public class MinorClient extends Client {
 
 
 	public ArrayList<Booking> getBookings() {
-		return super.getBookingCatalog().getBookings();
+		return this.minorBookings;
 	}
 
 	@Override
