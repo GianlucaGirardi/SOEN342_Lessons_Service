@@ -14,23 +14,31 @@ public class BookingCatalog {
 	}
 
 	public Booking bookLesson(Lesson lesson) {
-		if (lesson.isAvailable()) {
-			Booking newBooking = new Booking(lesson);
-			bookings.add(newBooking);
-			lesson.addBooking(newBooking);
-			return newBooking;
-		}
-		System.out.println("Lesson is full. Cannot book this lesson.");
-		return null;
+		// Lesson has space & can be booked
+		Booking newBooking = new Booking(lesson);
+		// Add the new booking to the BookingCatalog
+		bookings.add(newBooking);
+		// Add the new booking to the lesson's list of bookings
+		lesson.addBooking(newBooking);
+		// Update the # of spots
+		lesson.setCurrentCapacity(lesson.getCurrentCapacity() + 1);
+
+		return newBooking;
 	}
 
+
 	public boolean unBookLesson(long bookingId) {
+		// Iterate through bookings
 		for (Booking booking : bookings) {
+			// match the id to the booking
 			if (booking.getBookingId() == bookingId) {
+				// Get the associated lesson
 				Lesson lesson = booking.getLesson();
-				lesson.removeBooking(String.valueOf(bookingId));
+				// remove the booking from the lesson bookings & update capacity
+				lesson.removeBooking(booking);
+				lesson.setCurrentCapacity(lesson.getCurrentCapacity() - 1);
 				bookings.remove(booking);
-				lesson.setCurrentCapacity(lesson.getCurrentCapacity() + 1);
+
 				System.out.println("Booking " + bookingId + " successfully removed.");
 				return true;
 			}

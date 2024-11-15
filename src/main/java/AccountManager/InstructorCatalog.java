@@ -60,9 +60,9 @@ public class InstructorCatalog {
 		return null;
 	}
 
-	public Instructor findInstructorByPhoneNumber(String phoneNumber) {
+	public Instructor findInstructorByUserName(String userName) {
 		return instructors.stream()
-				.filter(instructor -> instructor.getPhoneNumber().equals(phoneNumber))
+				.filter(instructor -> instructor.getUserName().equals(userName))
 				.findFirst()
 				.orElse(null);
 	}

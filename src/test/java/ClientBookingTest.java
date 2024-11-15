@@ -82,7 +82,7 @@ public class ClientBookingTest {
         Client client1 = new Client("John", "Doe", "john_doe", "password123", lessonCatalog, 25);
         Booking booking1 = client1.bookLesson(lesson.getLESSON_ID());
         assertNotNull(booking1, "Client1 should be able to book the lesson.");
-        assertEquals(lesson.getCurrentCapacity(), 0, "Lesson should be full after Client1 books it.");
+        assertEquals(lesson.getCurrentCapacity(), 1, "Lesson should be full after Client1 books it.");
 
         // Client2 attempts to book the same full lesson - return error message
         Client client2 = new Client("Jane", "Smith", "jane_smith", "password456", lessonCatalog, 30);
@@ -92,14 +92,73 @@ public class ClientBookingTest {
         // Client1 unbooks the lesson, space++
         boolean unbookingResult = client1.unBookLesson(booking1.getBookingId());
         assertTrue(unbookingResult, "Client1 should be able to unbook the lesson.");
-        assertEquals(lesson.getCurrentCapacity(), 1, "Lesson's capacity should increase after unbooking.");
+        assertEquals(lesson.getCurrentCapacity(), 0, "Lesson's capacity should increase after unbooking.");
 
         // Client2 books the lesson
         Booking booking3 = client2.bookLesson(lesson.getLESSON_ID());
         assertNotNull(booking3, "Client2 should now be able to book the lesson after it became available.");
-        assertEquals(lesson.getCurrentCapacity(), 0, "Lesson should be full again after Client2 books it.");
+        assertEquals(lesson.getCurrentCapacity(), 1, "Lesson should be full again after Client2 books it.");
 
         client2.displayAllAssociatedBookings();
         assertEquals(1, client2.getBookingCatalog().getBookings().size(), "Client2 should have 1 booking now.");
     }
+
+    @Test
+    public void testBookingAndUnbookingMultipleSpots() {
+        // Create a lesson with 3 available spots
+        Lesson lesson = lessonCatalog.createLesson("Math 101", 3, "New York", "Room 101", "Space A",
+                LocalDate.of(2024, 11, 20), LocalDate.of(2024, 12, 20), "Mon#Wed#Fri", LocalTime.of(10, 0), LocalTime.of(12, 0));
+
+        // Create and register 4 clients
+        Client client1 = new Client("John", "Doe", "john_doe", "password123", lessonCatalog, 25);
+        Client client2 = new Client("Jane", "Smith", "jane_smith", "password456", lessonCatalog, 30);
+        Client client3 = new Client("Alice", "Johnson", "alice_johnson", "password789", lessonCatalog, 22);
+        Client client4 = new Client("Bob", "Davis", "bob_davis", "password101", lessonCatalog, 40);
+
+        // Client1 books the lesson
+        Booking booking1 = client1.bookLesson(lesson.getLESSON_ID());
+        assertNotNull(booking1, "Client1 should be able to book the lesson.");
+        assertEquals(lesson.getCurrentCapacity(), 1, "Lesson should have 2 spots left after Client1 books it.");
+
+        // Client2 books the lesson
+        Booking booking2 = client2.bookLesson(lesson.getLESSON_ID());
+        assertNotNull(booking2, "Client2 should be able to book the lesson.");
+        assertEquals(lesson.getCurrentCapacity(), 2, "Lesson should have 1 spot left after Client2 books it.");
+
+        // Client3 books the lesson
+        Booking booking3 = client3.bookLesson(lesson.getLESSON_ID());
+        assertNotNull(booking3, "Client3 should be able to book the lesson.");
+        assertEquals(lesson.getCurrentCapacity(), 3, "Lesson should be full after Client3 books it.");
+
+        // Client4 tries to book the full lesson but should fail
+        Booking booking4 = client4.bookLesson(lesson.getLESSON_ID());
+        assertNull(booking4, "Client4 should not be able to book the lesson because it is full.");
+
+        // Client1 unbooks the lesson, freeing up a spot
+        boolean unbookingResult1 = client1.unBookLesson(booking1.getBookingId());
+        assertTrue(unbookingResult1, "Client1 should be able to unbook the lesson.");
+        assertEquals(lesson.getCurrentCapacity(), 2, "Lesson's capacity should increase after Client1 unbooks.");
+
+        // Client4 should now be able to book the lesson
+        Booking booking5 = client4.bookLesson(lesson.getLESSON_ID());
+        assertNotNull(booking5, "Client4 should now be able to book the lesson after Client1 unbooks.");
+        assertEquals(lesson.getCurrentCapacity(), 3, "Lesson should be full again after Client4 books it.");
+
+        // Client2 unbooks the lesson
+        boolean unbookingResult2 = client2.unBookLesson(booking2.getBookingId());
+        assertTrue(unbookingResult2, "Client2 should be able to unbook the lesson.");
+        assertEquals(lesson.getCurrentCapacity(), 2, "Lesson's capacity should increase after Client2 unbooks.");
+
+        // Client3 rebooks the lesson (now that a spot is available)
+        Booking booking6 = client3.bookLesson(lesson.getLESSON_ID());
+        assertNull(booking6, "Client3 should should not be able to rebook lesson after Client2 unbooks since they have already booked this lesson.");
+        assertEquals(lesson.getCurrentCapacity(), 2, "Lesson should not be full since Client3 was not able to rebook.");
+
+        // Verify bookings for Client4 (who booked after Client1 unbooked)
+        assertEquals(1, client4.getBookingCatalog().getBookings().size(), "Client4 should have 1 booking now.");
+
+        // Verify bookings for Client3 (who attempted a rebook after Client2 unbooked)
+        assertEquals(1, client3.getBookingCatalog().getBookings().size(), "Client3 should have 1 booking now.");
+    }
+
 }
