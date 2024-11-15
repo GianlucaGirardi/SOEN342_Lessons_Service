@@ -171,6 +171,14 @@ public class Administrator extends Account {
 		return false;
 	}
 
+	public void viewClientBookings(String userName) {
+		for (Client client : clientCatalog.getClients()) {
+			if (client.getUserName().equals(userName)) {
+				client.displayAllAssociatedBookings();
+			}
+		}
+	}
+
 	public static void resetInstance() {
 		admin = null;
 	}

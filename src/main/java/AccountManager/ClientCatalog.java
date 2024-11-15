@@ -21,6 +21,14 @@ public class ClientCatalog {
 		return "Registration successful: " + registeredClient.toString();
 	}
 
+	public String registerMinorAccount(String firstName, String lastName, String username, String password, LessonCatalog lessonCatalog, int age,String guardianFName, String guardianLName, int guardianAge){
+		if (checkUsernameExists(username)) {
+			return "Username already exists. Please choose another username.";
+		}
+		MinorClient registeredMinClient = new MinorClient(firstName, lastName, username, password,lessonCatalog, age,guardianFName,guardianLName, guardianAge);
+		return "Registration successful: " + registeredMinClient.toString();
+	}
+
 	private boolean checkUsernameExists(String username) {
 		for (Client client : clients) {
 			if (client.getUserName().equals(username)) {

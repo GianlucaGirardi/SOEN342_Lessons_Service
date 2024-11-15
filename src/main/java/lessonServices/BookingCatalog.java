@@ -26,7 +26,6 @@ public class BookingCatalog {
 		return newBooking;
 	}
 
-
 	public boolean unBookLesson(long bookingId) {
 		// Iterate through bookings
 		for (Booking booking : bookings) {
