@@ -1,3 +1,4 @@
+import AccountManager.MinorClient;
 import lessonServices.Lesson;
 import lessonServices.LessonCatalog;
 import lessonServices.Booking;
@@ -159,6 +160,50 @@ public class ClientBookingTest {
 
         // Verify bookings for Client3 (who attempted a rebook after Client2 unbooked)
         assertEquals(1, client3.getBookingCatalog().getBookings().size(), "Client3 should have 1 booking now.");
+    }
+
+    @Test
+    public void testMinorClientBookLesson() {
+        LessonCatalog lessonCatalog = new LessonCatalog();
+        ClientCatalog clientCatalog = new ClientCatalog(null);
+
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        clientCatalog.addClient(minorClient);
+
+        Lesson lesson = lessonCatalog.createLesson("Math 101", 2, "New York", "Room 101", "Space A",
+                LocalDate.of(2024, 11, 20), LocalDate.of(2024, 12, 20), "Mon#Wed#Fri", LocalTime.of(10, 0), LocalTime.of(12, 0));
+
+        // MinorClient books the lesson
+        Booking booking = minorClient.bookLesson(lesson.getLESSON_ID());
+
+        // Verify the booking was successful
+        assertNotNull(booking, "MinorClient should be able to book the lesson.");
+        assertEquals(1, minorClient.getBookings().size(), "MinorClient should have 1 booking.");
+    }
+
+    @Test
+    public void testMinorClientBookAndUnbookLesson() {
+        LessonCatalog lessonCatalog = new LessonCatalog();
+        ClientCatalog clientCatalog = new ClientCatalog(null);
+
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        clientCatalog.addClient(minorClient);
+
+        Lesson lesson = lessonCatalog.createLesson("Math 101", 2, "New York", "Room 101", "Space A",
+                LocalDate.of(2024, 11, 20), LocalDate.of(2024, 12, 20), "Mon#Wed#Fri", LocalTime.of(10, 0), LocalTime.of(12, 0));
+
+        // MinorClient books the lesson
+        Booking booking = minorClient.bookLesson(lesson.getLESSON_ID());
+
+        assertNotNull(booking, "MinorClient should be able to book the lesson.");
+        assertEquals(1, minorClient.getBookings().size(), "MinorClient should have 1 booking.");
+
+        // MinorClient unbooks the lesson
+        boolean unbookingResult = minorClient.unBookLesson(lesson.getLESSON_ID());
+
+        // Verify that the unbooking was successful
+        assertTrue(unbookingResult, "MinorClient should be able to unbook the lesson.");
+        assertEquals(0, minorClient.getBookings().size(), "MinorClient should have 0 bookings after unbooking.");
     }
 
 }

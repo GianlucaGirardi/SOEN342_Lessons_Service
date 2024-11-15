@@ -180,6 +180,56 @@ public class AccountManagerTest {
         instructorCatalog.register("Jane", "Doe", "jane_doe", "password123", lessonCatalog, "555-1234", "Math", availabilities);
         instructorCatalog.displayAllInstructors();
     }
+
+    @Test
+    public void testCreateMinorClient() {
+        LessonCatalog lessonCatalog = new LessonCatalog();
+        ClientCatalog clientCatalog = new ClientCatalog(null);
+
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        clientCatalog.addClient(minorClient);
+
+        // Ensure the MinorClient is registered successfully
+        Client registeredClient = clientCatalog.getClientByUserName("john_doe");
+        assertNotNull(registeredClient, "MinorClient should be registered successfully.");
+
+        // Verify guardian's details
+        assertEquals("Jane", minorClient.getGuardianFirstName(), "Guardian first name should match.");
+        assertEquals("Doe", minorClient.getGuardianLastName(), "Guardian last name should match.");
+        assertEquals(40, minorClient.getGuardianAge(), "Guardian age should match.");
+    }
+
+    @Test
+    public void testLoginMinorClient() {
+        LessonCatalog lessonCatalog = new LessonCatalog();
+        ClientCatalog clientCatalog = new ClientCatalog(null);
+
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        clientCatalog.addClient(minorClient);
+
+        // Login with correct credentials
+        Client loggedInClient = clientCatalog.getClientByUserName("john_doe");
+        assertNotNull(loggedInClient, "Client should be found by username.");
+
+        // Verify that the login client matches the registered client
+        assertEquals("john_doe", loggedInClient.getUserName(), "Username should match.");
+        assertTrue(loggedInClient.getPassword().equals("password123"), "Password should match.");
+    }
+
+    @Test
+    public void testLoginMinorClientWithIncorrectPassword() {
+        LessonCatalog lessonCatalog = new LessonCatalog();
+        ClientCatalog clientCatalog = new ClientCatalog(null);
+
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        clientCatalog.addClient(minorClient);
+
+        // Attempt logging in with incorrect password
+        Client loggedInClient = clientCatalog.getClientByUserName("john_doe");
+        assertNotNull(loggedInClient, "Client should be found by username.");
+        assertFalse(loggedInClient.getPassword().equals("wrongpassword"), "Password should not match.");
+    }
+
 }
 
 
