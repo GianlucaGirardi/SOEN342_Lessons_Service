@@ -48,15 +48,15 @@ public class InstructorCatalog {
 		for (Instructor instructor : instructors) {
 			if (instructor.getUserName().equals(username)) {
 				if (instructor.getPassword().equals(password)) {
-					System.out.println("Login successful!");
+					//System.out.println("Login successful!");
 					return instructor;
 				} else {
-					System.out.println("Invalid password.");
+					//System.out.println("Invalid password.");
 					return null;
 				}
 			}
 		}
-		System.out.println("Username not found.");
+		//System.out.println("Username not found.");
 		return null;
 	}
 

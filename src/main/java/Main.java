@@ -240,7 +240,7 @@ public class Main {
 
         }
 
-        // Message before returning to the main menu
+
         System.out.println("\nReturning to main menu...");
     }
 
@@ -261,44 +261,51 @@ public class Main {
             clientMain(scanner, newLessonCatalog, newClientCatalog, newClientCatalog.login(username, password));
 
         }
-        //else if
+
         else if(admin.login(username, password)!=null){
             System.out.println("Administrator logged in successfully.");
-            administratorMain(scanner, newLessonCatalog,newInstructorCatalog, newClientCatalog, admin.login(username, password));
+            administratorMain(scanner, newLessonCatalog, newInstructorCatalog, newClientCatalog, admin.login(username, password));
         }
         else{
             System.out.println("Invalid username or password.");
         }
-        //else
+
 
 
     }
     Instructor newInstructor;
     public static void instructorMain(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog, Instructor newInstructor) {
-          //view all lessons(instructor specific)
-         //take on lessons
-        //remove himself from lesson
+
         boolean leave = false;
         while (!leave) {
             System.out.println("\nChoose an option:");
             System.out.println("1. View all offerings");
             System.out.println("2. take on offering");
-            System.out.println("3. sign out");
+            System.out.println("3. cancel offering");
+            System.out.println("4. sign out");
 
             System.out.print("Enter your choice: ");
 
 
             try {
                 int choice = scanner.nextInt();
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
-                        //view all offerings that can be taken up
+                        newLessonCatalog.displayAllLessons();
                         break;
                     case 2:
-                        //take on offering
+                        System.out.println("Enter the lesson ID");
+                        long lessonId = scanner.nextLong();
+                        newInstructor.takeUpLesson(lessonId);
                         break;
                     case 3:
+                        System.out.println("Enter the lesson ID");
+                        long lessonId2 = scanner.nextLong();
+                        newInstructor.removeTakenUpLesson(lessonId2);
+                        break;
+                    case 4:
                         System.out.println("signing out...");
                         leave = true;
                         break;
@@ -315,10 +322,7 @@ public class Main {
 
     Client newClient;
     public static void clientMain(Scanner scanner, LessonCatalog newLessonCatalog, ClientCatalog newClientCatalog, Client newClient) {
-        //view all offerings taken up by instructors
-        //view my bookings
-        //make booking
-        //cancel booking
+
         boolean leave = false;
         while (!leave) {
             System.out.println("\nChoose an option:");
@@ -333,23 +337,24 @@ public class Main {
 
             try {
                 int choice = scanner.nextInt();
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
-                        //view all offerings that can be taken up
+                        newLessonCatalog.displayLessons();
                         break;
                     case 2:
                         newClient.displayAllAssociatedBookings();
                         break;
                     case 3:
-                        System.out.println("Enter the lesson ID");
+                        System.out.println("Enter the lesson ID:");
                         long lessonId = scanner.nextLong();
                         newClient.bookLesson(lessonId);
-                        leave = true;
                         break;
                     case 4:
-                        System.out.println("signing out...");
-                        leave = true;
+                        System.out.println("Enter the lesson ID:");
+                        long lessonId2 = scanner.nextLong();
+                        newClient.unBookLesson(lessonId2);
                         break;
                     case 5:
                         System.out.println("signing out...");
@@ -375,16 +380,18 @@ public class Main {
             System.out.println("1. create lesson");
             System.out.println("2. view instructor catalog");
             System.out.println("3. view client catalog");
-            System.out.println("4. view lesson catalog"); //view all lesson available to public
-            //view all lesson that instrucor can take on
-            System.out.println("5. delete account");
-            System.out.println("6. sign out");
+            System.out.println("4. view lessons available to clients"); //view all lesson available to public
+            System.out.println("5. view lesson that instructor can take on");//view all lesson that instrucor can take on
+            System.out.println("6. delete account");
+            System.out.println("7. cancel client booking");
+            System.out.println("8. sign out");
 
             System.out.print("Enter your choice: ");
 
 
             try {
                 int choice = scanner.nextInt();
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
@@ -474,9 +481,19 @@ public class Main {
                         newLessonCatalog.displayLessons();
                         break;
                     case 5:
-                        //delete account
+                        newLessonCatalog.displayAllLessons();
                         break;
                     case 6:
+                        System.out.print("Enter username of account you wish to delete: ");
+                        String name = scanner.nextLine();
+                        admin.deleteAccount(name); //need to test
+                        break;
+                    case 7:
+                        System.out.print("Enter  ID of booking you wish to remove: ");
+                        long id = scanner.nextLong();
+                        admin.removeBookingFromClient(id); //need to test
+                        break;
+                    case 8:
                         System.out.println("signing out...");
                         leave = true;
                         break;
