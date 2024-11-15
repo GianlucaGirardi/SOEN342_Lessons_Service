@@ -9,11 +9,17 @@ import java.util.ArrayList;
 public class Client extends Account {
 	private int age;
 	private BookingCatalog bookingCatalog;
+	private ArrayList<MinorClient> dependents;
 
 	public Client(String firstName, String lastName, String userName, String password, LessonCatalog lessonCatalog, int age) {
 		super(firstName, lastName, userName, password, lessonCatalog);
 		this.age = age;
 		this.bookingCatalog = new BookingCatalog();
+		this.dependents = new ArrayList<MinorClient>();
+	}
+
+	public ArrayList<MinorClient> getDependents(){
+		return this.dependents;
 	}
 
 	public int getAge() {
@@ -55,41 +61,58 @@ public class Client extends Account {
 		return bookingCatalog.bookLesson(lesson);
 	}
 
-	public boolean unBookLesson(long lessonId){
-		return bookingCatalog.unBookLesson(lessonId);
-	}
+public boolean unBookLesson(long lessonId){
+	return bookingCatalog.unBookLesson(lessonId);
+}
 
-	public boolean emptyBookings() {
-		// Make a copy in order to not alter the list being iterated over
-		ArrayList<Booking> bookings = new ArrayList<>(this.getBookingCatalog().getBookings());
-		for (Booking booking : bookings) {
-			System.out.println("count");
-			boolean success = this.unBookLesson(booking.getLesson().getLESSON_ID());
-			if (!success) {
-				System.out.println("An error has occurred while removing a booking");
+public boolean emptyBookings() {
+	// Make a copy in order to not alter the list being iterated over
+	ArrayList<Booking> bookings = new ArrayList<>(this.getBookingCatalog().getBookings());
+	for (Booking booking : bookings) {
+		System.out.println("count");
+		boolean success = this.unBookLesson(booking.getLesson().getLESSON_ID());
+		if (!success) {
+			System.out.println("An error has occurred while removing a booking");
+		}
+	}
+	return true;
+}
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj) return true;
+	if (obj == null || getClass() != obj.getClass()) return false;
+	Client client = (Client) obj;
+	return getUserName().equals(client.getUserName());
+}
+
+	public Booking bookLessonDependent(String depUserName, long lessonId){
+		ArrayList<MinorClient> dependents = this.getDependents();
+		for (MinorClient minorClient : dependents) {
+			if (minorClient.getUserName().equals(depUserName)) {
+				return minorClient.bookLesson(lessonId);
 			}
 		}
-		return true;
+		System.out.println("System was unable to find the dependent");
+		return null;
+	}
+
+	public boolean unBookLessonDependent(String depUserName, long lessonId){
+		ArrayList<MinorClient> dependents = this.getDependents();
+		for (MinorClient minorClient : dependents) {
+			if (minorClient.getUserName().equals(depUserName)) {
+				return minorClient.unBookLesson(lessonId);
+			}
+		}
+		System.out.println("System was unable to unbook the lesson.");
+		return false;
 	}
 
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null || getClass() != obj.getClass()) return false;
-		Client client = (Client) obj;
-		return getUserName().equals(client.getUserName());
-	}
-
-	@Override
-	public int hashCode() {
-		return getUserName().hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return super.toString() + " age= " + this.age;
-	}
+@Override
+public String toString() {
+	return super.toString() + " age= " + this.age;
+}
 }
 
 

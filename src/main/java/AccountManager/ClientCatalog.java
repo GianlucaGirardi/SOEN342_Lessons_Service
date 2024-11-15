@@ -21,11 +21,12 @@ public class ClientCatalog {
 		return "Registration successful: " + registeredClient.toString();
 	}
 
-	public String registerMinorAccount(String firstName, String lastName, String username, String password, LessonCatalog lessonCatalog, int age,String guardianFName, String guardianLName, int guardianAge){
+	public String registerMinorAccount(String firstName, String lastName, String username, String password, LessonCatalog lessonCatalog, int age, String guardianFName, String guardianLName, int guardianAge) {
 		if (checkUsernameExists(username)) {
 			return "Username already exists. Please choose another username.";
 		}
-		MinorClient registeredMinClient = new MinorClient(firstName, lastName, username, password,lessonCatalog, age,guardianFName,guardianLName, guardianAge);
+		MinorClient registeredMinClient = new MinorClient(firstName, lastName, username, password, lessonCatalog, age, guardianFName, guardianLName, guardianAge);
+		addClient(registeredMinClient);  // Add MinorClient to the list
 		return "Registration successful: " + registeredMinClient.toString();
 	}
 
@@ -67,7 +68,6 @@ public class ClientCatalog {
 		return clients.removeIf(client -> client.getUserName().equals(userName));
 	}
 
-
 	public void displayAllClients() {
 		if (clients.isEmpty()) {
 			System.out.println("No clients available.");
@@ -83,9 +83,17 @@ public class ClientCatalog {
 				.orElse(null);
 	}
 
-	public boolean deleteClient(Client client){
+	public boolean deleteClient(Client client) {
 		boolean safeToDelete = client.emptyBookings();
-		if(safeToDelete){
+		if(client.getAge() < 18){
+			for(Client guardian : this.getClients()){
+				ArrayList<MinorClient> depList = new ArrayList<>(guardian.getDependents());
+				for(MinorClient min : depList){
+					guardian.getDependents().remove(min);
+				}
+			}
+		}
+		if (safeToDelete) {
 			return this.clients.remove(client);
 		}
 		return false;
@@ -94,4 +102,19 @@ public class ClientCatalog {
 	public ArrayList<Client> getClients() {
 		return new ArrayList<>(clients);
 	}
+
+	public boolean registerDependentToClient(Client guardianClient, String dependentUserName) {
+		Client depClient = this.getClientByUserName(dependentUserName);
+		if (depClient instanceof MinorClient) {
+			boolean success = guardianClient.getDependents().add((MinorClient) depClient);
+			if (success) {
+				System.out.println("Successfully added a dependent " + depClient.getUserName());
+				return true;
+			} else {
+				System.out.println("Could not add dependent.");
+			}
+		}
+		return false;
+	}
 }
+

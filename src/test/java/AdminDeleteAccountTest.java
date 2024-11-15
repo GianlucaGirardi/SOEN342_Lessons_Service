@@ -270,6 +270,43 @@ public class AdminDeleteAccountTest {
         assertEquals(lesson1.getCurrentCapacity(), 0, "Lesson's capacity should increase after the booking is removed.");
     }
 
+    @Test
+    public void testDeleteMinorClientAccountSuccess() {
+        // Create the necessary catalogs
+        LessonCatalog lessonCatalog = new LessonCatalog();
+        InstructorCatalog instructorCatalog = new InstructorCatalog();
+        ClientCatalog clientCatalog = new ClientCatalog(instructorCatalog);
+
+        // Create an Administrator
+        Administrator admin = Administrator.getAdministrator("Admin", "User", "admin_user", "admin_password", lessonCatalog, clientCatalog, instructorCatalog);
+
+        // Create a Client (Guardian) and MinorClient (Dependent)
+        Client guardian = new Client("John", "Doe", "john_doe", "password123", lessonCatalog, 30);
+        MinorClient minorClient = new MinorClient("Jane", "Doe", "jane_doe", "password456", lessonCatalog, 16, "Emily", "Doe", 40);
+
+        // Register the Client and MinorClient
+        clientCatalog.addClient(guardian);
+        clientCatalog.addClient(minorClient);
+
+        // Ensure the minor client is registered
+        boolean isRegistered = clientCatalog.registerDependentToClient(guardian, "jane_doe");
+
+        assertTrue(isRegistered , "Minor client should be registered successfully.");
+
+        // Ensure the guardian exists and the minor client is listed as a dependent
+        assertTrue(guardian.getDependents().contains(minorClient), "Guardian should have the minor client in their dependents list.");
+
+        // Delete the MinorClient account
+        boolean result = admin.deleteAccount("jane_doe");
+
+        // Verify that the MinorClient has been removed from the catalog
+        assertTrue(result, "Minor client account should be deleted successfully.");
+        assertNull(clientCatalog.getClientByUserName("jane_doe"), "Minor client should not exist after deletion.");
+
+        // Verify that the guardian's dependent list no longer contains the deleted minor client
+        assertFalse(guardian.getDependents().contains(minorClient), "Guardian's dependents list should not contain the deleted minor client.");
+    }
+
 }
 
 
