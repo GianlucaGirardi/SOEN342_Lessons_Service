@@ -72,15 +72,23 @@ public class Instructor extends Account {
 	}
 
 	public boolean removeTakenUpLesson(long lessonId) {
-		Lesson lesson = this.lessonCatalog.searchLessonById(lessonId);
-		if(lesson != null && takenUpLessons.contains(lesson)){
-			lesson.setInstructor(null);
-			takenUpLessons.remove(lesson);
-			System.out.println("Lesson successfully removed.");
-			return true;
+		Lesson lessonToRemove = null;
+		for (Lesson lesson : takenUpLessons) {
+			if (lesson.getLESSON_ID() == lessonId) {
+				lessonToRemove = lesson;
+				break;
+			}
 		}
-		System.out.println("Could not find a lesson with a matching id.");
-		return false;
+
+		if (lessonToRemove == null) {
+			throw new IllegalArgumentException("No taken-up lesson found with ID " + lessonId);
+		}
+
+		// Remove the lesson from instructor's list and update lesson's instructor
+		lessonToRemove.setInstructor(null);
+		takenUpLessons.remove(lessonToRemove);
+		System.out.println("Lesson successfully removed.");
+		return true;
 	}
 
 

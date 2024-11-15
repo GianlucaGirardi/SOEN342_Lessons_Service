@@ -22,7 +22,7 @@ public class Lesson {
 		LESSON_ID = lessonsCnter++;
 		this.name = validateLessonName(lessonName);
 		this.initialCapacity = initialCapacity;
-		this.currentCapacity = this.initialCapacity;
+		this.currentCapacity = 0;
 		this.lessonType = getLessonType(initialCapacity);
 		this.schedule = new Schedule(city, locationName, space, startDate, endDate, daysOfWeek, startHour, endHour);
 		this.bookings = new ArrayList<>();
@@ -55,9 +55,6 @@ public class Lesson {
 		return this.currentCapacity;
 	}
 
-	public void setCurrentCapacity(int newCapacity) {
-		this.currentCapacity = newCapacity;
-	}
 
 	public Instructor getInstructor(){
 		return this.instructor;
@@ -77,26 +74,28 @@ public class Lesson {
 	}
 
 	public boolean isAvailable() {
-		return currentCapacity > 0;
+		return currentCapacity >= 0 && currentCapacity < this.getInitialCapacity();
 	}
 
 	public void addBooking(Booking booking) {
-		if (isAvailable()) {
-			bookings.add(booking);
-			setCurrentCapacity(currentCapacity - 1);
-		} else {
-			System.out.println("No more spots available for this lesson.");
-		}
+		bookings.add(booking);
+	}
+	public void setCurrentCapacity(int newCapacity) {
+		this.currentCapacity = newCapacity;
 	}
 
-	public boolean removeBooking(String bookingId) {
-		for (Booking booking : bookings) {
-			if (booking.getBookingId() == Long.parseLong(bookingId)) {
-				bookings.remove(booking);
-				return true;
-			}
-		}
-		return false;
+//	public void addBooking(Booking booking) {
+//		if (isAvailable()) {
+//			bookings.add(booking);
+//			setCurrentCapacity(currentCapacity - 1);
+//		} else {
+//			System.out.println("No more spots available for this lesson.");
+//		}
+//	}
+
+	public boolean removeBooking(Booking booking) {
+		System.out.println(booking.getBookingId());
+		return bookings.remove(booking);
 	}
 
 	public ArrayList<Booking> getBookings() {
@@ -106,6 +105,8 @@ public class Lesson {
 	public String getName() {
 		return name;
 	}
+
+
 
 	@Override
 	public String toString() {

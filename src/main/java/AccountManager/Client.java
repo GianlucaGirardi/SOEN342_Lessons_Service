@@ -4,6 +4,7 @@ import lessonServices.Booking;
 import lessonServices.BookingCatalog;
 import lessonServices.Lesson;
 import lessonServices.LessonCatalog;
+import java.util.ArrayList;
 
 public class Client extends Account {
 	private int age;
@@ -36,8 +37,19 @@ public class Client extends Account {
 	}
 
 	public Booking bookLesson(long lessonId) {
+		// verify that a client is not rebooking a lesson
+		for (Booking booking : this.bookingCatalog.getBookings()) {
+			if (booking.getLesson().getLESSON_ID() == lessonId) {
+				System.out.println(booking.getLesson().getLESSON_ID());
+				System.out.println("Client has already booked this lesson.");
+				return null;
+			}
+		}
+		// Obtain the lesson
 		Lesson lesson = super.getLessonCatalog().searchLessonById(lessonId);
+		// Verify that the lesson has space
 		if (lesson == null || !lesson.isAvailable()) {
+			System.out.println("Lesson is full. Cannot book this lesson.");
 			return null;
 		}
 		return bookingCatalog.bookLesson(lesson);
@@ -46,6 +58,20 @@ public class Client extends Account {
 	public boolean unBookLesson(long lessonId){
 		return bookingCatalog.unBookLesson(lessonId);
 	}
+
+	public boolean emptyBookings() {
+		// Make a copy in order to not alter the list being iterated over
+		ArrayList<Booking> bookings = new ArrayList<>(this.getBookingCatalog().getBookings());
+		for (Booking booking : bookings) {
+			System.out.println("count");
+			boolean success = this.unBookLesson(booking.getLesson().getLESSON_ID());
+			if (!success) {
+				System.out.println("An error has occurred while removing a booking");
+			}
+		}
+		return true;
+	}
+
 
 	@Override
 	public boolean equals(Object obj) {

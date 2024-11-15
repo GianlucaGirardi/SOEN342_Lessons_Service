@@ -75,6 +75,14 @@ public class ClientCatalog {
 				.orElse(null);
 	}
 
+	public boolean deleteClient(Client client){
+		boolean safeToDelete = client.emptyBookings();
+		if(safeToDelete){
+			return this.clients.remove(client);
+		}
+		return false;
+	}
+
 	public ArrayList<Client> getClients() {
 		return new ArrayList<>(clients);
 	}
