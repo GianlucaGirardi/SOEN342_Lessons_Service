@@ -186,7 +186,7 @@ public class AccountManagerTest {
         LessonCatalog lessonCatalog = new LessonCatalog();
         ClientCatalog clientCatalog = new ClientCatalog(null);
 
-        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 15);
         clientCatalog.addClient(minorClient);
 
         // Ensure the MinorClient is registered successfully
@@ -204,7 +204,7 @@ public class AccountManagerTest {
         LessonCatalog lessonCatalog = new LessonCatalog();
         ClientCatalog clientCatalog = new ClientCatalog(null);
 
-        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16);
         clientCatalog.addClient(minorClient);
 
         // Login with correct credentials
@@ -221,7 +221,7 @@ public class AccountManagerTest {
         LessonCatalog lessonCatalog = new LessonCatalog();
         ClientCatalog clientCatalog = new ClientCatalog(null);
 
-        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16, "Jane", "Doe", 40);
+        MinorClient minorClient = new MinorClient("John", "Doe", "john_doe", "password123", lessonCatalog, 16);
         clientCatalog.addClient(minorClient);
 
         // Attempt logging in with incorrect password

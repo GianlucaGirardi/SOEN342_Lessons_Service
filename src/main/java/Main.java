@@ -32,11 +32,6 @@ public class Main {
         newInstructorCatalog.setClientCatalog(newClientCatalog);
         Administrator admin = Administrator.getAdministrator("Luca","Rahman", "lr", "123", newLessonCatalog, newClientCatalog, newInstructorCatalog);
 
-
-
-
-
-
         while (!exit) {
             System.out.println("\nChoose an option:");
             System.out.println("1. View all offerings");
@@ -83,7 +78,6 @@ public class Main {
 
 
     public static void register(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog, ClientCatalog newClientCatalog, Administrator admin) {
-
 
 
         System.out.println("\nRegister as:");
@@ -186,19 +180,20 @@ public class Main {
             int clientAge = Integer.parseInt(scanner.nextLine());
 
             if (clientAge<18) {
-                System.out.print("Enter legal guardian username: ");
-                String legalGuardianUsername = scanner.nextLine();
+//                System.out.print("Enter legal guardian username: ");
+//                String legalGuardianUsername = scanner.nextLine();
+                System.out.println("WARNING!\nYou will be registered as a Minor Account and will need assistance by a adult to book a lesson\nPlease enter a password to continue");
                 System.out.print("Enter password: ");
-                String password = scanner.nextLine();
+//                String password = scanner.nextLine();
                 String clientPassword = scanner.nextLine();
 
-                System.out.println("\nRegistration complete for Client.");
+                System.out.println("\nRegistration complete for Minor Client.");
                 System.out.println("Role: " + role);
                 System.out.println("Name: " + clientFirstName + " " + clientLastName);
                 System.out.println("Username: " + clientUsername);
                 System.out.println("Password: [hidden for security]");
 
-                System.out.println(newClientCatalog.register(clientFirstName, clientLastName, clientUsername, clientPassword, newLessonCatalog, clientAge));
+                System.out.println(newClientCatalog.registerMinorAccount(clientFirstName, clientLastName, clientUsername, clientPassword, newLessonCatalog, clientAge));
 
             }
             else {
@@ -270,8 +265,6 @@ public class Main {
             System.out.println("Invalid username or password.");
         }
 
-
-
     }
     Instructor newInstructor;
     public static void instructorMain(Scanner scanner, LessonCatalog newLessonCatalog, InstructorCatalog newInstructorCatalog, Instructor newInstructor) {
@@ -328,9 +321,11 @@ public class Main {
             System.out.println("\nChoose an option:");
             System.out.println("1. View all offerings taken up by instructors");
             System.out.println("2. View my bookings");
-            System.out.println("3. make booking");
+            System.out.println("3. make booking (18+)");
             System.out.println("4. cancel booking");
-            System.out.println("5. sign out");
+            System.out.println("5. register dependent");
+            System.out.println("6. book lesson for dependent");
+            System.out.println("7. sign out");
 
             System.out.print("Enter your choice: ");
 
@@ -347,6 +342,10 @@ public class Main {
                         newClient.displayAllAssociatedBookings();
                         break;
                     case 3:
+                        if(newClient.getAge() < 18){
+                            System.out.println("A Minor Account cannot book a lesson\nPlease book a lesson through your guardian.");
+                            break;
+                        }
                         System.out.println("Enter the lesson ID:");
                         long lessonId = scanner.nextLong();
                         newClient.bookLesson(lessonId);
@@ -357,6 +356,23 @@ public class Main {
                         newClient.unBookLesson(lessonId2);
                         break;
                     case 5:
+                        System.out.println("Enter the User Name of the dependent you wish to add.");
+                        String depUserName = scanner.nextLine();
+                        newClientCatalog.registerDependentToClient(newClient,depUserName);
+                        break;
+                    case 6:
+                        System.out.println("Please enter the USERNAME of the dependent");
+                        String userName = scanner.nextLine();
+                        System.out.println("Please enter the LESSON ID of the lesson they wish to book.");
+                        long lessonIdMinor = scanner.nextLong();
+                        newClient.bookLessonDependent(userName, lessonIdMinor);
+                    case 8:
+                        System.out.println("Please enter the USERNAME of the dependent");
+                        String userName2 = scanner.nextLine();
+                        System.out.println("Please enter the LESSON ID of the lesson they wish to unbook.");
+                        long lessonIdMinor2 = scanner.nextLong();
+                        newClient.unBookLessonDependent(userName2, lessonIdMinor2);
+                    case 7:
                         System.out.println("signing out...");
                         leave = true;
                         break;
@@ -365,7 +381,7 @@ public class Main {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a number between 1 and 4.");
-                scanner.next(); // Clear the invalid input from the scanner
+                scanner.next();
             }
         }
 

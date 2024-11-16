@@ -29,7 +29,7 @@ public class DayTimeSlot {
 
 	@Override
 	public String toString(){
-		return "\nday " + this.day + "\nstart " + this.start  + "\nend " + this.end;
+		return "";
 	}
 	
 }

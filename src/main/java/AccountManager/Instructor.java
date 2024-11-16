@@ -84,7 +84,6 @@ public class Instructor extends Account {
 			throw new IllegalArgumentException("No taken-up lesson found with ID " + lessonId);
 		}
 
-		// Remove the lesson from instructor's list and update lesson's instructor
 		lessonToRemove.setInstructor(null);
 		takenUpLessons.remove(lessonToRemove);
 		System.out.println("Lesson successfully removed.");
@@ -94,7 +93,9 @@ public class Instructor extends Account {
 
 	@Override
 	public String toString() {
-		return String.format("Instructor [userName=%s, firstName=%s, lastName=%s, phone number=%s, specialization=%s, availability cities=%s, takenUpLessons=%s]",
-				getUserName(), getFirstName(), getLastName(), phoneNumber, specialization, availabilities.toString(), takenUpLessons.toString());
+//		return String.format("Instructor [userName=%s, firstName=%s, lastName=%s, phone number=%s, specialization=%s, availability cities=%s, takenUpLessons=%s]",
+//				getUserName(), getFirstName(), getLastName(), phoneNumber, specialization, availabilities.toString(), takenUpLessons.toString());
+//
+		return "";
 	}
 }

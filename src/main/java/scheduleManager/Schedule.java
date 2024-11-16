@@ -81,7 +81,6 @@ public class Schedule {
 				", daysOfWeek " + daysOfWeek +
 				", startHour " + startHour +
 				", endHour " + endHour +
-				", timeslots " + timeslots +
 				", location " + city + " " + location +
 				", space " + space;
 	}
