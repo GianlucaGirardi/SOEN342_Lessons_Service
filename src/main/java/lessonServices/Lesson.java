@@ -110,6 +110,6 @@ public class Lesson {
 
 	@Override
 	public String toString() {
-		return "Lesson ID " + this.LESSON_ID + ", Name: " + this.name + ", Type: " + this.lessonType + ", Schedule: " + this.schedule;
+		return "Lesson ID " + this.LESSON_ID + ", Name: " + this.name + ", Type: " + this.lessonType + ",\n Schedule: " + this.schedule;
 	}
 }

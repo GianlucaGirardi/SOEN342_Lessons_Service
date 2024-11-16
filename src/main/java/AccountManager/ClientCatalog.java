@@ -21,12 +21,12 @@ public class ClientCatalog {
 		return "Registration successful: " + registeredClient.toString();
 	}
 
-	public String registerMinorAccount(String firstName, String lastName, String username, String password, LessonCatalog lessonCatalog, int age, String guardianFName, String guardianLName, int guardianAge) {
+	public String registerMinorAccount(String firstName, String lastName, String username, String password, LessonCatalog lessonCatalog, int age) {
 		if (checkUsernameExists(username)) {
 			return "Username already exists. Please choose another username.";
 		}
-		MinorClient registeredMinClient = new MinorClient(firstName, lastName, username, password, lessonCatalog, age, guardianFName, guardianLName, guardianAge);
-		addClient(registeredMinClient);  // Add MinorClient to the list
+		MinorClient registeredMinClient = new MinorClient(firstName, lastName, username, password, lessonCatalog, age);
+		addClient(registeredMinClient);
 		return "Registration successful: " + registeredMinClient.toString();
 	}
 
@@ -108,7 +108,7 @@ public class ClientCatalog {
 		if (depClient instanceof MinorClient) {
 			boolean success = guardianClient.getDependents().add((MinorClient) depClient);
 			if (success) {
-				System.out.println("Successfully added a dependent " + depClient.getUserName());
+				System.out.println("Successfully added the dependent " + depClient.getUserName());
 				return true;
 			} else {
 				System.out.println("Could not add dependent.");

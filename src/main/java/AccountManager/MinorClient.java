@@ -12,11 +12,8 @@ public class MinorClient extends Client{
 	private ArrayList<Booking> minorBookings;
 	private String userName;
 
-	public MinorClient(String firstName, String lastName, String userName, String password, LessonCatalog lessonCatalog, int age, String guardianFName, String guardianLName, int guardianAge) {
+	public MinorClient(String firstName, String lastName, String userName, String password, LessonCatalog lessonCatalog, int age) {
 		super(firstName, lastName, userName, password, lessonCatalog, age);
-		this.guardianFirstName = guardianFName;
-		this.guardianLastName = guardianLName;
-		this.guardianAge = guardianAge;
 		this.minorBookings = super.getBookingCatalog().getBookings();
 		this.userName=userName;
 	}
@@ -62,6 +59,7 @@ public class MinorClient extends Client{
 
 	@Override
 	public String toString() {
-		return "MinorClient " + super.toString();
+//		return "MinorClient " + super.toString();
+		return "";
 	}
 }
