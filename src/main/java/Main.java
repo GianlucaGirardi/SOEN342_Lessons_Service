@@ -275,7 +275,8 @@ public class Main {
             System.out.println("1. View all offerings");
             System.out.println("2. take on offering");
             System.out.println("3. cancel offering");
-            System.out.println("4. sign out");
+            System.out.println("4. Display all taken up offerings");
+            System.out.println("5. sign out");
 
             System.out.print("Enter your choice: ");
 
@@ -299,6 +300,9 @@ public class Main {
                         newInstructor.removeTakenUpLesson(lessonId2);
                         break;
                     case 4:
+                        newInstructor.displayAllTakenUpLesson();
+                        break;
+                    case 5:
                         System.out.println("signing out...");
                         leave = true;
                         break;
@@ -366,12 +370,14 @@ public class Main {
                         System.out.println("Please enter the LESSON ID of the lesson they wish to book.");
                         long lessonIdMinor = scanner.nextLong();
                         newClient.bookLessonDependent(userName, lessonIdMinor);
+                        break;
                     case 8:
                         System.out.println("Please enter the USERNAME of the dependent");
                         String userName2 = scanner.nextLine();
                         System.out.println("Please enter the LESSON ID of the lesson they wish to unbook.");
                         long lessonIdMinor2 = scanner.nextLong();
                         newClient.unBookLessonDependent(userName2, lessonIdMinor2);
+                        break;
                     case 7:
                         System.out.println("signing out...");
                         leave = true;

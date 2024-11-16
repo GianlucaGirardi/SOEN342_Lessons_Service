@@ -90,6 +90,12 @@ public class Instructor extends Account {
 		return true;
 	}
 
+	public void displayAllTakenUpLesson(){
+		for(Lesson lesson : this.getTakenUpLessons()){
+			System.out.println(lesson);
+		}
+	}
+
 
 	@Override
 	public String toString() {

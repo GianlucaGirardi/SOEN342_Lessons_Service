@@ -65,6 +65,7 @@ public class Schedule {
 			if (!(this.endDate.isBefore(newStartDate) || this.startDate.isAfter(newEndDate))) {
 				for (DayTimeSlot el : newTimeslots) {
 					if (this.timeslots.contains(el)) {
+						System.out.println("\nCannot create an overlapping schedule");
 						return true;
 					}
 				}
